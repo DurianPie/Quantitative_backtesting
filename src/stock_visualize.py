@@ -10,4 +10,8 @@ class stock_visualize():
     intro  = '用于个股和组合的可视化分析'
 
     def simple_one_stock(name, price, time,*args):
+        
+        pass
+
+    def complicated_one_stock(name, price, time,*args):
         pass
