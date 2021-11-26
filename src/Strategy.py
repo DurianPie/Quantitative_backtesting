@@ -44,7 +44,7 @@ class Strategy:
         return
 
 def main():
-    data = IOUtils('src/data.pkl')
+    data = IOUtils('data/data.pkl')
     T = Trade()
     date = '2019-01-03'
     s = Strategy()

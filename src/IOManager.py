@@ -28,8 +28,8 @@ class IOManager:
                     stocks.update({row: stock})
         for key, val in stocks.items():
             val.sort_by_date()
-        for key, val in stocks.items():
-            val.get_all_info()
+        # for key, val in stocks.items():
+        #     val.get_all_info()
         return stocks
 
     @staticmethod
