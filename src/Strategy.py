@@ -36,6 +36,9 @@ class Strategy:
             print(stock, (daily_data[stock][0] - start_daily_data[stock][0])/(start_daily_data[stock][0]))
         Trade.selloffall(daily_data)
         money = Trade.Position['cash'] / 10
+        
+        if (len(stocks) < 10):
+            return
         for i in range(10):
             Trade.buy_stock(daily_data, stocks[i], cost=money)
         return

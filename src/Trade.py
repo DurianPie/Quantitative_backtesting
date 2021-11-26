@@ -45,7 +45,7 @@ class Trade:
         """
         new_position = copy.deepcopy(self.Position)
         for stock in self.Position.keys():
-            if stock != 'cash':
+            if stock != 'cash' and stock in daily_data:
                 stock_price = daily_data[stock][0]
                 new_position['cash'] += self.Position[stock] * stock_price
                 del new_position[stock]
