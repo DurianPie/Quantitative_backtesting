@@ -48,6 +48,27 @@ class Trade:
             if stock != 'cash' and stock in daily_data:
                 stock_price = daily_data[stock][0]
                 new_position['cash'] += self.Position[stock] * stock_price
+                print("sell stock %s at price %f" %(self.Position[stock], stock_price))
                 del new_position[stock]
         self.Position = new_position
-                
+
+    def GetAccoutInfo(self):
+        return self.Position
+
+    def GetTotalAsset(self, daily_data):
+        asset = 0
+        for key, value in self.Position.items():
+            if key == "cash":
+                asset += value
+            else :
+                if key in daily_data:
+                   stock_price = daily_data[key][0]
+                   asset += value * stock_price
+                else:
+                    print("cannot get daily info for stock ", key)
+                    cur_date_stocks = list(daily_data.keys())
+                    print("cur_date_stocks:", cur_date_stocks)
+
+                    return asset, False
+        
+        return asset, True
