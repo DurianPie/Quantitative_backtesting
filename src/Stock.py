@@ -34,7 +34,7 @@ class Stock:
         if self.__info.__contains__(day):
             return self.__info.get(day)
         else:
-            print("股票在{}的信息不存在".format(day))
+            # print("{} 股票在{}的信息不存在".format(self.__name, day))
             return None
 
     def get_val(self, day, key):

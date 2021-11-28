@@ -8,6 +8,8 @@ class IOUtils:
 
     def __init__(self, file_path):
         self.data = IOManager.read_file(file_path)
+        # self.data = {}
+
 
     def get_info_by_day(self, day):
         """
