@@ -43,7 +43,7 @@ class StockInfo:
     描述一只股票的持有情况
     """
     def __init__(self, count, price) -> None:
-        self.cout = count
+        self.count = count
         self.price = price
         self.value = self.count * self.price 
 

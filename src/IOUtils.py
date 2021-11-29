@@ -19,9 +19,9 @@ class IOUtils:
         """
         
         daily_data = {}
-        for stock_name in self.data.keys():
+        for stock_name in self.data.keys():  #
             stock_data = self.data[stock_name].get_info_by_day(day)
-            if stock_data != None:
+            if stock_data is not None:
                 daily_data[stock_name] = stock_data
         return daily_data
 

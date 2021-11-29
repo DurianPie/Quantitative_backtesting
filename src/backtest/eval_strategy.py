@@ -9,17 +9,31 @@ class TestResult:
         self.strategy_name = strategy_name
         self.exchange_info = collections.OrderedDict()
 
-    def addInfo(self, date, asset):
-        self.exchange_info[date] = asset
+    def addInfo(self, date, money, stock, asset, status):
+        self.exchange_info[date] = {}
+        self.exchange_info[date]['money'] = money
+       # self.exchange_info[date].append(money)
+        self.exchange_info[date]['stock'] = stock
+        self.exchange_info[date]['asset'] =asset
+        if status == 1:
+            self.exchange_info[date]['status'] = 'Yep'
+        else:
+            self.exchange_info[date]['status'] = 'Nope'
+
     
     def size(self):
         return len(self.exchange_info)
     
     def is_positve_margin(self):
         if self.size() > 0:
-            first_item = list(self.exchange_info.items())[0]
-            last_item = list(self.exchange_info.items())[-1]
-            if (last_item[1] > first_item[1]):
+            f_t = list(self.exchange_info.items())[0]
+            e_t = list(self.exchange_info.items())[-1]
+            first_list = list(f_t[1].items())
+            last_list = list(e_t[1].items())
+
+            first_item = first_list[2][1]
+            last_item = last_list[2][1]
+            if (last_item > first_item):
                 return True
         return False
 

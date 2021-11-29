@@ -6,12 +6,13 @@
 # Version          :1.0
 import copy
 
+
 class Trade:
     def __init__(self, cash=100000) -> None:
-        Position={'cash':cash}
+        Position = {'cash': cash}
         # Position 存储当前仓位，cash为现金值 如{'600150.XSHG': 20, 'cash': 1000}
         self.Position = Position
-    
+
     def print(self):
         print(self.Position)
 
@@ -48,7 +49,7 @@ class Trade:
             if stock != 'cash' and stock in daily_data:
                 stock_price = daily_data[stock][0]
                 new_position['cash'] += self.Position[stock] * stock_price
-                print("sell stock %s at price %f" %(self.Position[stock], stock_price))
+                print("sell stock %s at price %f" % (self.Position[stock], stock_price))
                 del new_position[stock]
         self.Position = new_position
 
@@ -56,19 +57,24 @@ class Trade:
         return self.Position
 
     def GetTotalAsset(self, daily_data):
-        asset = 0
+        asset = 0  # 初始化资产为0
+        money = 0
+        stock = 0
         for key, value in self.Position.items():
             if key == "cash":
-                asset += value
-            else :
+                asset += value  # 现金直接加入我们的资产中
+                money = value
+            else:
                 if key in daily_data:
-                   stock_price = daily_data[key][0]
-                   asset += value * stock_price
+                    stock_price = daily_data[key][0]
+                    asset += value * stock_price  # 股票的话就算一下当前的股票值多少钱
+                    stock += value * stock_price
+
                 else:
                     print("cannot get daily info for stock ", key)
                     cur_date_stocks = list(daily_data.keys())
                     print("cur_date_stocks:", cur_date_stocks)
 
-                    return asset, False
-        
-        return asset, True
+                    return money, stock, asset, False
+        # print('why?')
+        return money, stock, asset, True
