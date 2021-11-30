@@ -12,7 +12,7 @@ import plotly_express as px
 """
     预计主要使用到ploty, plty.express , mlpfinance当然还少不了matplotlib
 """
-class stock_visualize():
+class stock_visualize():   #各方法中的data参数均为传入需要绘图的数据
     def __init__(self):
         self.intro  = '用于个股和组合的可视化分析'
     def testing(self):
@@ -47,8 +47,9 @@ class stock_visualize():
             print('遇到问题')
             #还可以增加设置参数 
 
-    def market_hearmap(self,data):  #和下边一个函数都还需要修改，图的参数应该由函数传参
-        fig = px.treemap(data, \
+    def market_hearmap(self,data):  #全市场涨跌热力图
+        try:
+            fig = px.treemap(data, \
                  path=['SEC_NAME'],\
                  values=[1,1,1,1,1,1,1,1], \
                  color='PCT_CHG', \
@@ -59,10 +60,13 @@ class stock_visualize():
                  width = 876,\
                  color_continuous_scale='Geyser',\
                  color_continuous_midpoint=0 , )
-        fig.show()
+            fig.show()
+        except:
+            print('遇到问题')
 
     def strategy_heatmap(self,data):
-        fig = px.treemap(data, \
+        try:
+            fig = px.treemap(data, \
                  path=['SEC_NAME'],\
                  values=[1,1,1,1], \
                  color='PCT_CHG', \
@@ -73,16 +77,20 @@ class stock_visualize():
                  width = 1920,\
                  color_continuous_scale='Geyser',\
                  color_continuous_midpoint=0 , )
-        fig.show()
-    def holding_weights(self,data):
+            fig.show()
+        except:
+            print('遇到问题')
+    def holding_weights(self,data,type='pie'):  #可选图的种类
         fig = px.pie(data, names='name',values='weight')
         fig.show()
 
+'''
+#注释掉的代码是对可视化类的测试
 from WindPy import w
 w.start()
 case = stock_visualize()
 #w.isconnected()
-'''
+
 data1 = w.wsd('600519.SH',['open','high','low','close','volume'],'-60D',usedf=True)
 
 data1 = data1[1]
