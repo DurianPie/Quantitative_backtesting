@@ -1,3 +1,4 @@
+from typing import Tuple
 from src.IOManager import *
 
 
@@ -10,6 +11,11 @@ class IOUtils:
         self.data = IOManager.read_file(file_path)
         # self.data = {}
 
+    def check_day_info(self, day):
+        for stock_name in self.data.keys():  
+            if not self.data[stock_name].judge_day_valid(day):
+                return False
+            return True
 
     def get_info_by_day(self, day):
         """
@@ -19,7 +25,7 @@ class IOUtils:
         """
         
         daily_data = {}
-        for stock_name in self.data.keys():  #
+        for stock_name in self.data.keys():  
             stock_data = self.data[stock_name].get_info_by_day(day)
             if stock_data is not None:
                 daily_data[stock_name] = stock_data
@@ -49,6 +55,8 @@ class IOUtils:
 
 
 if __name__ == '__main__':
-   strategy = IOUtils('data/data.pkl')
-   res = strategy.find_largest_within('2019-04-01', 7)
-   print(res)
+   data = IOUtils('data/data.pkl')
+   if data.check_day_info('2019-04-01'):
+       print('Exist 2019-04-01')
+#    res = data.find_largest_within('2019-04-01', 7)
+#    print(res)

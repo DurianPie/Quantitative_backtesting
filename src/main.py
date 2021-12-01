@@ -11,8 +11,7 @@ import pandas as pd
 from src.backtest.back_test import *
 
 if __name__ == '__main__':
-    data = IOUtils('../data/data.pkl')
-    # data = {}
+    data = IOUtils('./data/data.pkl')
 
     back_test = BackTest()
 

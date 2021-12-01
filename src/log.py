@@ -17,7 +17,7 @@ class Logs():
             logname = ''
         if strategyname is None:
             strategyname = ''
-        # self.logname = logname + strategyname + datetime.now().strftime("%Y-%m-%d-%H：%M：%S")
+        # self.logname = logname + strategyname + datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
         self.logs = []
 
     def add(self, log):
