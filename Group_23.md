@@ -9,14 +9,16 @@
 1. #### 单支股票数据结构
 
    a. 成员数据
-   i. Info 字典类型，每个元素：key值为日期，value为所有因子
+   i. Info 字典类型，每个元素：key值为日期，value为所有因子。
    e.g.
    {"2010-01-04": [open, close, high, ..., MACD, OBV, PSY],
    "2010-01-05": [...], }
+
    ii. name 股票名称
    b. `get_info_by_day`: 返回一支股票在某一天的所有信息
    c. `calculate_profit(self, start, end)`:
    i. 计算该股票在起止时间内[start, end]的涨幅
+
    ii.实现逻辑：为了避免start或者end天不存在的情况，会首先二分到大于等于start的第一天
    以及小于等于end的最后一天，再使用日期作为key值直接索引出当天的开盘or收盘价。
 
@@ -27,6 +29,7 @@
    a. `pickle.load`从pandas读入 `key`值为日期，`value`为DataFrame （pandas对象）
    b. `IOManager.__parse_data()`:
    i. 返回股票对象的字典(dict)
+
    ii.基本实现逻辑：遍历data字典，字典value值为DataFrame, 该value值每一行可以处理出
    某支股票在某一天的数据，按照股票名称加入该股票的info成员中。(同时使用了pandas中
    isna()接口，过滤所有的缺失值)，最后每支股票的所有数据按照日期排序。
@@ -39,6 +42,7 @@
 
    a. `find_largest_within(self, cur, k)`.
    i. 找出最近k天涨幅最大的股票 [max(0, cur-k+1), cur]
+
    ii.基本实现：遍历IOManager.__parse_data()返回的字典，调用calculate_profit接口得到
    该股票最近k的利润，维护利润的最大值以及对应最大值的股票名称即可。
 
