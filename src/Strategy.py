@@ -31,6 +31,53 @@ class Strategy:
         """
         cur = datetime.datetime.strptime(cur_date, '%Y-%m-%d').date()
         start = cur - datetime.timedelta(days=7)
+        while not data.check_day_info(str(start)):
+            start = start - datetime.timedelta(days=1)
+
+        daily_data = data.get_info_by_day(str(cur_date))
+        start_daily_data = data.get_info_by_day(str(start))
+        
+        cur_date_stocks = list(daily_data.keys())
+        start_date_stocks = list(start_daily_data.keys())
+        # print(cur_date, "cur_date_stocks:", cur_date_stocks)
+        # print(start, "start_date_stocks:", start_date_stocks)
+        same_stocks = list(set(cur_date_stocks).intersection(set(start_date_stocks)))
+
+        stocks_value = [(s, (daily_data[s][0] - start_daily_data[s][0])/start_daily_data[s][0]) for s in same_stocks]
+        stocks_value.sort(key=takeSecond)
+
+        Trade.selloffall(daily_data)
+
+        if len(stocks_value) == 0:
+            print("cannot buy any stock because last 7 day has no same stock with cur_date:%s!" % cur_date)
+        money = Trade.Position['cash'] / 10
+        buy_stock_num = min(10, len(stocks_value))
+
+        for i in range(buy_stock_num):
+            status = Trade.buy_stock(daily_data, stocks_value[i][0], cost=money)
+            # if status:
+            #     print("use %f money buy stock: %s at %s" % (money, stocks_value[i][0], cur_date))
+            # else:
+            #     print("fail to use %f money buy stock: %s at %s" % (money, stocks_value[i][0], cur_date))
+        return
+    @staticmethod
+    def strategy_2(cur_date, data, Trade):
+        """
+        
+        Arguments
+        ---------
+        date: 操作日期
+        data: 交易数据
+        Trade: 交易类，含有持仓信息
+        
+        Returns
+        -------
+        
+        """
+        cur = datetime.datetime.strptime(cur_date, '%Y-%m-%d').date()
+        start = cur - datetime.timedelta(days=7)
+        if not data.check_day_info(start):
+            start = start - datetime.timedelta(days=1)
 
         daily_data = data.get_info_by_day(cur_date)
         start_daily_data = data.get_info_by_day(str(start))
@@ -41,17 +88,9 @@ class Strategy:
         print(start, "start_date_stocks:", start_date_stocks)
         same_stocks = list(set(cur_date_stocks).intersection(set(start_date_stocks)))
 
-        # for s in same_stocks:
-        #     print(s, daily_data[s][0], start_daily_data[s][0])
-        #     margin =  daily_data[s][0] - start_daily_data[s][0])(start_daily_data[s][0]
-        #     print("marign:",margin)
         stocks_value = [(s, (daily_data[s][0] - start_daily_data[s][0])/start_daily_data[s][0]) for s in same_stocks]
-        stocks_value.sort(key=takeSecond)
+        stocks_value.sort(key=takeSecond, reverse=True)
 
-        # stocks.sort(key = lambda s:(daily_data[s][0] - start_daily_data[s][0])/(start_daily_data[s][0]))
-        for stock_marign in stocks_value:
-            stock = stock_marign[0]
-            # print(stock, (daily_data[stock][0] - start_daily_data[stock][0])/(start_daily_data[stock][0]))
         Trade.selloffall(daily_data)
 
         if len(stocks_value) == 0:
@@ -65,7 +104,6 @@ class Strategy:
                 print("use %f money buy stock: %s at %s" % (money, stocks_value[i][0], cur_date))
             else:
                 print("fail to use %f money buy stock: %s at %s" % (money, stocks_value[i][0], cur_date))
-
         return
 
 def main():

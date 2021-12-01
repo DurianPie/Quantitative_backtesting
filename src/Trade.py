@@ -49,7 +49,7 @@ class Trade:
             if stock != 'cash' and stock in daily_data:
                 stock_price = daily_data[stock][0]
                 new_position['cash'] += self.Position[stock] * stock_price
-                print("sell stock %s at price %f" % (self.Position[stock], stock_price))
+                # print("sell stock %s at price %f" % (self.Position[stock], stock_price))
                 del new_position[stock]
         self.Position = new_position
 

@@ -5,3 +5,5 @@ __init__.py
 __pycache__
 *.ipynb
 .DS_Store
+*.csv
+result

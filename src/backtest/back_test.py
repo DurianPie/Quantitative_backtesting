@@ -12,6 +12,7 @@ from src.backtest.eval_strategy import *
 from src.log import *
 import random
 import os
+import csv
 import pandas as pd
 
 class BackTest:
@@ -36,7 +37,37 @@ class BackTest:
         
         return True
 
-    
+    def test_single(self, data, date, end, test_log, trade):
+        day_from_last_exchange = 0  # 距离上次交易经历了多少天 初始化
+        while date <= end:
+            day_from_last_exchange += 1
+            # is_trade_day = self.is_can_exchange(data, date, trade)  
+            is_trade_day = data.check_day_info(date.strftime('%Y-%m-%d')) # 检验当日数据是否存在
+            # print("%s exchange status %d !" % (date.strftime('%Y-%m-%d'), is_trade_day))
+
+            if not is_trade_day:
+                print(date)
+                date = date + datetime.timedelta(1)
+                continue
+            elif day_from_last_exchange < int(self.config.const_sold_interval):  # 不能交易直接往后一天
+                date = date + datetime.timedelta(1)
+            else:
+                print("run strategy at ", date.strftime('%Y-%m-%d'))  # 这个时候就可以运行我们的策略了
+                if self.config.strategy == "strategy1_":
+                    Strategy.strategy_1(date.strftime('%Y-%m-%d'), data, trade)
+                elif self.config.strategy == "strategy2_":
+                    Strategy.strategy_2(date.strftime('%Y-%m-%d'), data, trade)
+                day_from_last_exchange = 0  # 重新更新距离上次交易时间
+            daily_data = data.get_info_by_day(date.strftime('%Y-%m-%d'))  # 获得当天股票信息
+            money, stock, asset, status = trade.GetTotalAsset(daily_data)
+            if not status:
+                print("cannot get Asset_info at %s" % date.strftime('%Y-%m-%d'))
+            else:
+                print("asset %s at %f" % (date.strftime('%Y-%m-%d'), asset))
+                #print(date)
+                test_log.addInfo(date, money, stock, asset, status)
+            date = date + datetime.timedelta(1)
+
     def test(self, data):
         """
         main test entrance
@@ -60,43 +91,14 @@ class BackTest:
         print(delta_days_list)
         
         for i, delta_day in enumerate(delta_days_list):
-            is_first_time = True
             new_start_date = start + datetime.timedelta(days=delta_day)  # 随机设置一个开始日期
-            trade = Trade()  # 开始交易
-            result = TestResult(self.config.strategy)  # eval_strategy 里面的的回测结果
-
-            if self.config.strategy == "strategy1_":
-                s = Strategy()  # 每隔7天卖出, 买入前7天股票跌入最大的
-                date = new_start_date  # date更新为新的开始日期
-                day_from_last_exchange = 0  # 距离上次交易经历了多少天 初始化
-                
-                while date <= end:
-                    day_from_last_exchange += 1
-                    if is_first_time:  # ？这是啥
-                        trade = Trade(self.config.init_cash)  # 初始手里有多少钱...
-                        is_first_time = False
-                    ready_status = self.is_can_exchange(data, date, trade)  # 判断一下是否可以交易 这个可以存入log里面
-                    print("%s exchange status %d !" % (date.strftime('%Y-%m-%d'), ready_status))
-
-                    if not ready_status:  # 不能交易直接往后一天
-                        date = date + datetime.timedelta(1)
-                    else:
-                        if day_from_last_exchange >= int(self.config.const_sold_interval):  # 时间间隔大于固定卖股间隔
-                            print("run strategy at ", date.strftime('%Y-%m-%d'))  # 这个时候就可以运行我们的策略了
-                            s.strategy_1(date.strftime('%Y-%m-%d'), data, trade)  # strategy
-                            day_from_last_exchange = 0  # 重新更新距离上次交易时间
-                    daily_data = data.get_info_by_day(date.strftime('%Y-%m-%d'))  # 重新获得当天股票信息
-                    money, stock, asset, status = trade.GetTotalAsset(daily_data)
-                    if not status:
-                        print("cannot get Asset_info at %s" % date.strftime('%Y-%m-%d'))
-                    else:
-                        print("asset %s at %f" % (date.strftime('%Y-%m-%d'), asset))
-                        #print(date)
-                        result.addInfo(date, money, stock, asset, status)
-
-                    date = date + datetime.timedelta(1)
+            trade = Trade(self.config.init_cash)  # 开始交易
+            test_log = TestResult(self.config.strategy)  # eval_strategy 里面的的回测结果
+            date = new_start_date  # date更新为新的开始日期
+            self.test_single(data, date, end, test_log, trade)
+            
             print("finish test %d" % i)
-            self.test_info.append(result)  # 存储整个test过程中的结果
+            self.test_info.append(test_log)  # 存储整个test过程中的结果
 
         print("finish test!")
 
@@ -119,10 +121,10 @@ class BackTest:
         os.makedirs(result_dir, exist_ok=True)
         logs = Logs(self.config.logname, self.config.strategy)
         for i in range(len(self.test_info)):
-            with open("%s/test_%d" % (result_dir, i), "w") as wf:
+            with open("%s/test_%d.csv" % (result_dir, i), "w") as wf:
                 result = self.test_info[i]
                 for date, vals in result.exchange_info.items():
-                    line = "%s %f" %(date, vals['asset'])
+                    line = "%s, %f" %(date, vals['asset'])
                     wf.write(line)
                     wf.write("\n")
 

@@ -94,6 +94,5 @@ class Stock:
 
     def judge_day_valid(self, day):
         if (not self.__info.__contains__(day)) or str(self.__info[day][0]) == "nan":
-            print(self.__name + "无" + day + "信息")
             return False
         return True
