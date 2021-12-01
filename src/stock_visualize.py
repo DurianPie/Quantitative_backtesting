@@ -3,7 +3,6 @@ import pandas as pd
 import pickle
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-import Stock
 import mplfinance as mpf
 import plotly_express as px
 
