@@ -37,6 +37,22 @@ class BackTest:
         
         return True
 
+    def exceed_advice(self, trade, advice, daily_data):
+        if 'all' in advice['sell']:
+            trade.selloffall(daily_data)
+        else:
+            for stock in advice['sell']:
+                trade.sell_stock(daily_data, stock, price=advice['sell'][stock])
+        for stock in advice['buy'].keys():
+            try:
+                trade.buy_stock(daily_data, stock, cost=advice['sell'][stock])
+            except:
+                print(advice)
+                trade.print()
+                print(daily_data.keys())
+                raise
+        return
+
     def test_single(self, data, date, end, test_log, trade):
         day_from_last_exchange = 0  # 距离上次交易经历了多少天 初始化
         while date <= end:
@@ -49,16 +65,17 @@ class BackTest:
                 print(date)
                 date = date + datetime.timedelta(1)
                 continue
-            elif day_from_last_exchange < int(self.config.const_sold_interval):  # 不能交易直接往后一天
+            daily_data = data.get_info_by_day(date.strftime('%Y-%m-%d'))  # 获得当天股票信息
+            if day_from_last_exchange < int(self.config.const_sold_interval):  # 不能交易直接往后一天
                 date = date + datetime.timedelta(1)
             else:
                 print("run strategy at ", date.strftime('%Y-%m-%d'))  # 这个时候就可以运行我们的策略了
                 if self.config.strategy == "strategy1_":
-                    Strategy.strategy_1(date.strftime('%Y-%m-%d'), data, trade)
+                    advice = Strategy.strategy_1(date.strftime('%Y-%m-%d'), data, trade)
                 elif self.config.strategy == "strategy2_":
-                    Strategy.strategy_2(date.strftime('%Y-%m-%d'), data, trade)
+                    advice = Strategy.strategy_2(date.strftime('%Y-%m-%d'), data, trade)
+                self.exceed_advice(trade, advice, daily_data)
                 day_from_last_exchange = 0  # 重新更新距离上次交易时间
-            daily_data = data.get_info_by_day(date.strftime('%Y-%m-%d'))  # 获得当天股票信息
             money, stock, asset, status = trade.GetTotalAsset(daily_data)
             if not status:
                 print("cannot get Asset_info at %s" % date.strftime('%Y-%m-%d'))
