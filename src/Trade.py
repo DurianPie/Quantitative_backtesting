@@ -33,6 +33,20 @@ class Trade:
                 self.Position[stock_name] = amount
             return True
 
+    def sell_stock(self, daily_data, stock_name, amount=None, price=None):
+        if amount == None and price == None:
+            return False
+        elif amount == None:
+            amount = price / daily_data[stock_name][0]
+        else:
+            price = daily_data[stock_name] * amount
+        if self.Position[stock_name] < amount:
+            return False
+        else:
+            self.Position['cash'] = self.Position['cash'] + price
+            self.Position[stock_name] = self.Position[stock_name] - amount
+            return True
+
     def selloffall(self, daily_data):
         """
         清空当前持仓
