@@ -8,6 +8,8 @@ class IOUtils:
 
     def __init__(self, file_path):
         self.data = IOManager.read_file(file_path)
+        # self.data = {}
+
 
     def get_info_by_day(self, day):
         """
@@ -17,14 +19,11 @@ class IOUtils:
         """
         
         daily_data = {}
-        for stock_name in self.data.keys():
-            stock = self.data[stock_name]
-            
-        if self.__info.__contains__(day):
-            return self.__info.get(day)
-        else:
-            print("股票在 " + day + " 的信息不存在")
-            return None
+        for stock_name in self.data.keys():  #
+            stock_data = self.data[stock_name].get_info_by_day(day)
+            if stock_data is not None:
+                daily_data[stock_name] = stock_data
+        return daily_data
 
     def find_largest_within(self, cur, k):
         """

@@ -37,4 +37,5 @@ class IOManager:
         import pickle
         with open(file_path, "rb") as f:
             data = pickle.load(f)
+        # print(data)
         return IOManager.__parse_data(data)
