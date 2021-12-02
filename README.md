@@ -51,24 +51,17 @@ IO接口，提供一些对数据集的操作
 ### BackTest类
 
 回测功能的实现
-
 #### 成员变量
+- `config`
+- `test_info`
+#### 成员函数
 
-- `test_author` 回测人
-- `test_info` 存储每次回测的结果
-
-#### 方法
-
-- `set_config()`：设置初始信息，从BaseConfig类中获得
-- `is_can_exchange()`: 判断某天是否可以交易，通过查询某日股票信息是否存在判断
-- `test()`:回测，运行策略，模拟买卖
-  - 回测人员自定义初始时间和结束时间，计算时间差
-  - 回测人员也可以自定义是否随机测试，随机的话会根据回测的次数，会得到一个length为回测次数的`delta_days_list`，不随机就获得一个线性的日期list
-  - 根据策略开始回测
-
-- `eval()`判断我们的策略是不是一个好的策略，和 *EvalStrategy类* 交互
-- `save_eval_result()`: 把每次回测的结果，包括资产和日期存储到本地
-- `save_log()`:把所有结果存储为csv文件，和 *Logs类*交互，这里面会存储更详细的信息
+- `test()` 执行多次回测任务
+- `test_single()` 根据开始结束日期执行回测任务
+- `exceed_advice()` 执行策略建议
+- `eval()` 评估回测结果
+- `save_eval_result()` 保存回测结果
+- `save_log()` 保存执行日志
 
 ### Strategy类
 
@@ -112,20 +105,6 @@ IO接口，提供一些对数据集的操作
 - `const_sold_interval` 固定卖股票间隔，
 - `is_good_strategy_ratio` 判断一只策略好坏的比例
 - `logname` 日志名字，根据策略名和时间组成
-
-### back_test类
-
-#### 成员变量
-- `config`
-- `test_info`
-#### 成员函数
-
-- `test()` 执行多次回测任务
-- `test_single()` 根据开始结束日期执行回测任务
-- `exceed_advice()` 执行策略建议
-- `eval()` 评估回测结果
-- `save_eval_result()` 保存回测结果
-- `save_log()` 保存执行日志
 
 ### TestResult类
 
