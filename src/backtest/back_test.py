@@ -16,7 +16,7 @@ import csv
 import pandas as pd
 
 class BackTest:
-    def __init__(self, author="zhangsan"):
+    def __init__(self, author="Adimin"):
         self.test_author = author
         self.test_info = []  # each item is a strategy test experiment
     
