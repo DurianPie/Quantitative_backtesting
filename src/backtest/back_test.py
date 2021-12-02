@@ -74,6 +74,7 @@ class BackTest:
                     advice = Strategy.strategy_1(date.strftime('%Y-%m-%d'), data, trade)
                 elif self.config.strategy == "strategy2_":
                     advice = Strategy.strategy_2(date.strftime('%Y-%m-%d'), data, trade)
+                trade.print()
                 self.exceed_advice(trade, advice, daily_data)
                 day_from_last_exchange = 0  # 重新更新距离上次交易时间
             money, stock, asset, status = trade.GetTotalAsset(daily_data)
