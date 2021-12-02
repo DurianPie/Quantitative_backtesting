@@ -4,27 +4,26 @@
 
 ## 类的介绍
 
-### 数据处理+简单策略
 
-1. #### 单支股票数据结构
+### Stock类
+股票数据管理类 
 
-   a. 成员数据
-   i. Info 字典类型，每个元素：key值为日期，value为所有因子。
-   e.g.
+   - 成员数据
+     - `Info` 字典类型，每个元素：key值为日期，value为所有因子。
+     - e.g.
    {"2010-01-04": [open, close, high, ..., MACD, OBV, PSY],
    "2010-01-05": [...], }
-
-   ii. name 股票名称
-   b. `get_info_by_day`: 返回一支股票在某一天的所有信息
-   c. `calculate_profit(self, start, end)`:
-   i. 计算该股票在起止时间内[start, end]的涨幅
-
-   ii.实现逻辑：为了避免start或者end天不存在的情况，会首先二分到大于等于start的第一天
+     - `name` 股票名称
+   - `get_info_by_day`: 返回一支股票在某一天的所有信息
+   - `calculate_profit(self, start, end)`:
+     - i. 计算该股票在起止时间内[start, end]的涨幅
+     - ii.实现逻辑：为了避免start或者end天不存在的情况，会首先二分到大于等于start的第一天
    以及小于等于end的最后一天，再使用日期作为key值直接索引出当天的开盘or收盘价。
 
    
 
-2. #### pandas文件读入以及数据处理 IOManager
+### IOManager类
+pandas文件读入以及数据处理 
 
    a. `pickle.load`从pandas读入 `key`值为日期，`value`为DataFrame （pandas对象）
    b. `IOManager.__parse_data()`:
@@ -38,12 +37,15 @@
 
    ![数据处理_简单策略.jpg](https://i.loli.net/2021/12/01/538VPqKc4XnNljo.jpg)
 
-3. #### 策略类接口 StrategyUtils
+### IOUtils类
+IO接口，提供一些对数据集的操作
 
-   a. `find_largest_within(self, cur, k)`.
-   i. 找出最近k天涨幅最大的股票 [max(0, cur-k+1), cur]
+- `check_day_info` 检查某一天是否为交易日
+- `get_info_by_day` 获取某一天的股票信息
+- `find_largest_within(self, cur, k)`.
+ - 找出最近k天涨幅最大的股票 [max(0, cur-k+1), cur]
 
-   ii.基本实现：遍历IOManager.__parse_data()返回的字典，调用calculate_profit接口得到
+ - 基本实现：遍历IOManager.__parse_data()返回的字典，调用calculate_profit接口得到
    该股票最近k的利润，维护利润的最大值以及对应最大值的股票名称即可。
 
 ### BackTest类
@@ -53,7 +55,7 @@
 #### 成员变量
 
 - `test_author` 回测人
-- `test_info`:这个比较重要，存储每次回测的结果
+- `test_info` 存储每次回测的结果
 
 #### 方法
 
@@ -88,10 +90,11 @@
 
 #### 方法
 
-- `buy_stock` 购买某一只股票
-- `selloffall` 卖出所有股票
-- `GetAccoutInfo` 获取持仓信息
-- `GetTotalAsset` 计算某一天的持仓总资产
+- `buy_stock()` 购买某一只股票
+- `sell_stock()` 出售某一只股票
+- `selloffall()` 卖出所有股票
+- `GetAccoutInfo()` 获取持仓信息
+- `GetTotalAsset()` 计算某一天的持仓总资产
 
 ### BaseConfig类
 
@@ -110,7 +113,19 @@
 - `is_good_strategy_ratio` 判断一只策略好坏的比例
 - `logname` 日志名字，根据策略名和时间组成
 
+### back_test类
 
+#### 成员变量
+- `config`
+- `test_info`
+#### 成员函数
+
+- `test()` 执行多次回测任务
+- `test_single()` 根据开始结束日期执行回测任务
+- `exceed_advice()` 执行策略建议
+- `eval()` 评估回测结果
+- `save_eval_result()` 保存回测结果
+- `save_log()` 保存执行日志
 
 ### TestResult类
 
